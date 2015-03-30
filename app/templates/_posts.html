@@ -1,0 +1,30 @@
+	<ul class="media-list">
+	{% for post in posts %}
+  		<li class="media">
+    		<div class="media-left">
+      			<a href="{{url_for('.user',username=post.author.username)}}">
+        		<img class="media-object" src="{{post.author.gravatar()}}" >
+      			</a>
+    		</div>
+    		<div class="media-body">
+    			<p class="media-heading">
+      				<h4>
+      				<a href="{{url_for('.user',username=post.author.username)}}">{{post.author.username}}</a>
+      				<span class="pull-right" style="font-size:10px">{{ moment(post.timestamp).fromNow() }}</span>
+      				</h4>
+      		</p>
+          {% if post.body_html %}
+          {{post.body_html|safe}}
+          {%else%}
+     			{{post.body}}
+          {% endif %}
+          <div class="text-right">
+            {%if current_user==post.author %}
+              <a href="{{url_for('.edit',id=post.id)}}"class="btn btn-primary btn-xs">Edit</a>
+            {%endif%}
+            <a href="{{url_for('.post',id=post.id )}}" class="btn btn-info btn-xs">Permalink</a>
+          </div>
+    		</div>
+  		</li>
+  	{% endfor %}
+	</ul>

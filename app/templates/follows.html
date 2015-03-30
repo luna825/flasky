@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{%import "_macros.html" as macros%}
+{% block style %}
+{{super()}}
+<link href="{{url_for('static',filename='css/mycss.css')}}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+{% if get_flashed_messages() %}
+ {{get_flashed_messages()[0]}}
+{%endif%}
+<div class="container">
+    <div class="row page-header" style="border:0px">
+      <div class="col-md-2">
+        <p class="text-center"><img src="{{user.gravatar()}}"></p>
+        {% if user== current_user %}
+        <p class="text-center"><a href="{{url_for('.edit_profile')}}" class="btn btn-default">编辑资料</a></p>
+        {% endif %}
+      </div>
+      <div class="col-md-10">
+        <h1>
+          {{user.username}}
+          {% if current_user.is_administrator() %}
+          <small><a href="{{url_for('.edit_admin',id = user.id )}}" class="btn btn-danger btn-xs">修改</a></small>
+          {%endif%}
+        </h1>
+        {% if user.name and user.location %}
+        <p>{{user.name}}来自{{user.location }}</p>
+        {% endif %}
+        {% if user.about_me %}<p>{{user.about_me}}</p>{% endif %}
+        <div>
+          {%if current_user.can(Permission.FOLLOW) and user != current_user %}
+            {% if not current_user.is_following(user) %}
+            <a href="{{url_for('.follow',username=user.username)}}" class="btn btn-primary btn-xs">关注</a>
+            {%else%}
+            <a href="{{url_for('.unfollow',username=user.username)}}" class="btn btn-warning btn-xs">取消关注</a>
+            {% endif %}            
+          {% endif %}
+          <a href="{{url_for('.follows',username=user.username)}}">粉丝:<span class="badge">{{user.followers.count()}}</span></a>
+          <a href="{{url_for('.followed',username=user.username)}}">关注:<span class="badge">{{user.followed.count()}}</span></a>
+          {% if current_user.is_authenticated() and user !=current_user and user.is_following(current_user) %}
+          |<span class="label label-success">已关注你</span>
+          {%endif%}
+        </div>
+      </div>
+    </div>
+      <div class="col-md-12">
+         <h2>{{ftype}}</h2>
+      </div>
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="media-list">
+        {% for follow in follows %}
+            <li class="media">
+              <div class="media-left">
+                  <a href="{{url_for('.user',username=follow.user.username)}}">
+                  <img class="media-object" src="{{follow.user.gravatar()}}" >
+                  </a>
+              </div>
+              <div class="media-body">
+                <p class="media-heading">
+                    <h4>
+                    <a href="{{url_for('.user',username=follow.user.username)}}">{{follow.user.username}}</a>
+                    </h4>
+                </p>
+                <div>
+                  <p>关注 {{follow.user.followed.count()}}|粉丝 {{follow.user.followers.count()}}|微博 {{follow.user.posts.count()}}</p     >
+                  <p>{% if follow.user.location %}来自{{follow.user.location}}{% endif %}</p>
+                  <p>{% if follow.user.about_me %}{{follow.user.about_me }}{% endif %}</p>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% if pagination.pages > 1%}
+    {{macros.pagination_widget(pagination,endpoint,username = user.username)}}
+    {%endif%}
+</div>
+{% endblock %}
+{% block script %}
+{{super()}}
+{% endblock %}

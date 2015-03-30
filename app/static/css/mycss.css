@@ -1,0 +1,10 @@
+.page-header{margin-bottom:20px; }
+.media-left img{width: 64px;height: 64px;}
+.media{
+	margin: 0px;
+	padding: 18px;
+	border-bottom: solid 1px #dddddd;
+}
+.media-list li:hover{
+	background-color: #f5f5f5;
+}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+	<div class="page-header"><h1>Register</h1></div>
+	<div class="row">
+		<div class="col-md-3">
+ 		    {% if form.errors %} 		     
+		    <div class="alert alert-danger alert-dismissible in fade" role="alert">
+               <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				{% with error = form.errors.email or form.errors.username or form.errors.password %}
+				 {{error[0]}}
+				{% endwith %}
+ 		    </div>				
+ 		    {% endif %}
+			<form action="" method="post">
+				{{ form.hidden_tag()}}
+				<div class="form-group">					
+					<label for="register-email">Email address</label>					
+					{{form.email(class='form-control',id='register-email',placeholder='Enter email')}}					
+				</div>
+				<div class="form-group">
+					<label class="register-username">Username</label>
+					{{form.username(class='form-control',id='register-username',placeholder='Enter username')}}
+				</div>
+				<div class="form-group">
+					<label for="register-password">Password</label>
+					{{form.password(class='form-control',id='register-password',palceholder='Password')}}
+				</div>
+				<div class="form-group">
+					<label for="register-password2">Confirm Password</label>
+					{{form.password2(class='form-control',id='register-password2',palceholder='Password agin')}}
+				</div>
+				<button type="submit" class="btn btn-default">Register</button>
+			</form>
+		</div>
+	</div>
+	
+</div>
+{% endblock %}

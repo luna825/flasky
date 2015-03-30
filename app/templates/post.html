@@ -1,0 +1,36 @@
+{% extends "base.html"%}
+{% import "_macros.html" as macros %}
+{% block style %}
+{{super()}}
+<link href="{{url_for('static',filename='css/mycss.css')}}" rel="stylesheet">
+
+{% endblock %}
+{% block body %}
+
+<div class="container">
+	{% include '_posts.html' %}
+	<div class="row">
+	<h2>评论</h2>
+	
+		{% if current_user.can(Permission.COMMENT) %}
+    		<form action="" method="post">
+			{{ form.hidden_tag()}}
+				<div class="form-group">
+				{{form.body(class='form-control',rows='2')}}
+				</div>
+				<button type="submit" class="btn btn-default">提交</button>
+			</form>
+		{% endif %}
+	
+		{% include '_comments.html' %}
+	</div>
+ {% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block script %}
+{{super()}}
+{% endblock %}

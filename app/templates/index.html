@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{%import "_macros.html" as macros%}
+{% block style %}
+{{super()}}
+<link href="{{url_for('static',filename='css/mycss.css')}}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div class="container">
+	{% if current_user.is_authenticated() %}
+		<h1>Hello {{current_user.username}}</h1>
+		{% else %}
+		<h1>Welcome to blog!</h1>
+	{% endif %}
+	<div class="page-header" style="border:0px"> 
+		<form action="" method="post">
+		{{ form.hidden_tag()}}
+			{% if current_user.can(Permission.WRITE_ARTICLES) %}
+			<div class="form-group">
+			{{form.body(class='form-control',rows='3')}}
+			</div>
+			<button type="submit" class="btn btn-default">发表文章</button>
+			{% endif %}
+		</form>
+	</div>
+	<div>
+	  <ul class="nav nav-tabs">
+        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">All</a></li>
+        {% if current_user.is_authenticated() %}
+        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">Followers</a></li>
+        {% endif %}
+      </ul>
+
+		{% include '_posts.html' %}
+	</div>
+	
+
+	<div>
+		{{macros.pagination_widget(pagination,'.index')}}
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+{{super()}}
+{{pagedown.include_pagedown()}}
+{% endblock %}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flasky</title>
+
+    <!-- Bootstrap -->
+    <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="../static/jquery-1.11.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../static/bootstrap.min.js"></script>
+    
+ 	{% block style %}
+ 	<style type="text/css">
+ 	.dropdown:hover .dropdown-menu{
+ 		display:block;
+ 	}
+ 	#userhead-img{
+ 		width: 26px;
+ 		height: 26px;
+ 		margin-right: 2px;
+ 		border: solid 1px #ffffff;
+ 	}
+ 	</style>
+ 	{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">Flask</a>
+	    </div>
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+	      <ul class="nav navbar-nav" id="navbar-link">
+	        <li><a href="{{url_for('main.index',_external=True)}}">Home</a></li>
+	        {% if current_user.is_authenticated() %}
+	        <li><a href="{{ url_for('main.user',username=current_user.username )}}">Profile</a></li>
+	        {% endif %}
+	      </ul>
+	     <ul class="nav navbar-nav navbar-right ">
+	     	{% if current_user.is_authenticated() %}
+
+	     	<li class="dropdown">
+
+	     	<a href="{{ url_for('main.user',username=current_user.username )}}" data-target="{{ url_for('main.user',username=current_user.username )}}" class="dropdown-toggle navbar-brand" data-toggle="dropdown" role="button" aria-expanded="false">
+	     	<span><img id="userhead-img" src="{{current_user.gravatar('s')}}"></span>
+	     	{{current_user.username}}
+	     	<span class="caret"></span></a>
+	     	<ul class="dropdown-menu" role="menu">
+	     	<li><a href="{{url_for('main.edit_profile')}}">修改资料</a></li>
+	     	<li><a href="{{url_for('auth.edit_password')}}">修改密码</a></li>
+	     	<li><a href="{{url_for('auth.logout')}}">退出</a></li>
+	     	</ul>
+	     	</li>   	
+	        {% else %}
+	        <li><a href="{{url_for('auth.login')}}">Sign In</a></li>
+	        {% endif %}
+	     </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+	{% block body %} {% endblock %}
+	
+  </body>
+  
+    {% block script %}
+  	{{moment.include_moment()}}
+  	{{moment.lang('zh_cn')}}
+  	<script type="text/javascript">
+  	$(function(){
+  		$("#navbar-link a").each(function(index){
+  			$this = $(this)
+  			if ($this[0].href == String(window.location)){
+  				$this.parent().addClass('active')	
+  			}
+  		});
+  	});
+  	</script>
+  	
+
+ 	{% endblock %}
+</html>
